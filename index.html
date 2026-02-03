@@ -6,17 +6,31 @@
   <title>Be My Valentine 💖</title>
 
   <style>
+    /* ================= GLOBAL BACKGROUND ================= */
     body {
       margin: 0;
       height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      background-image: url("center.gif"); /* GIF BACKGROUND */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       font-family: 'Segoe UI', sans-serif;
       overflow: hidden;
     }
 
+    /* Soft overlay for readability */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.4);
+      z-index: 0;
+    }
+
+    /* ================= QUESTION CARD ================= */
     .container {
       position: relative;
       text-align: center;
@@ -26,7 +40,12 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       max-width: 400px;
       width: 90%;
-      z-index: 1;
+      z-index: 2;
+    }
+
+    .container.hidden {
+      opacity: 0;
+      pointer-events: none;
     }
 
     h1 {
@@ -57,6 +76,7 @@
       cursor: pointer;
       min-width: 120px;
       min-height: 45px;
+      transform-origin: center;
     }
 
     #no {
@@ -76,32 +96,23 @@
       z-index: 3;
     }
 
-    /* 🎉 RESULT PAGE */
+    /* ================= RESULT CONTENT ================= */
     .result {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background-image: url("center.gif"); /* FIRST IMAGE */
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+  display: none;           /* 🔑 fully hidden initially */
+  position: fixed;
+  inset: 0;
+  justify-content: center;
+  align-items: center;
+  z-index: 3;
+}
 
-    .result::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      backdrop-filter: blur(6px);
-      background: rgba(255, 255, 255, 0.7);
-    }
 
     .result-content {
-      position: relative;
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
       text-align: center;
-      z-index: 2;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
 
     .result-content h2 {
@@ -110,12 +121,11 @@
     }
 
     .result-content img {
-      width: 180px;        /* 👈 adjust this */
-      max-width: 70%;
-      height: auto;        /* keeps aspect ratio */
+      width: 170px;
+      height: auto;
     }
 
-    /* 🎉 Confetti */
+    /* ================= CONFETTI ================= */
     @keyframes confetti-fall {
       0% {
         transform: translateY(0) rotate(0deg);
@@ -136,21 +146,30 @@
       z-index: 9999;
     }
 
+    /* ================= SLIDE IN ================= */
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     @media (max-width: 600px) {
-      h1 {
-        font-size: 22px;
-      }
-      .container {
-        padding: 25px;
-      }
+      h1 { font-size: 22px; }
+      .container { padding: 25px; }
+      .result-content img { width: 140px; }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- QUESTION PAGE -->
-  <div class="container" id="questionBox">
+  <!-- QUESTION CARD -->
+  <div class="container hidden" id="questionBox">
     <h1 id="questionText">Will you be my Valentine? 💖</h1>
 
     <div class="buttons">
@@ -161,7 +180,7 @@
     </div>
   </div>
 
-  <!-- RESULT PAGE -->
+  <!-- RESULT -->
   <div class="result" id="resultBox">
     <div class="result-content">
       <h2>Yayyyy! 💕🥰</h2>
@@ -185,6 +204,13 @@
       "Really? 😢",
       "Please don’t do that 🥺💔"
     ];
+
+    /* Show card after 2s */
+    setTimeout(() => {
+      questionBox.classList.remove("hidden");
+      questionBox.style.animation = "slideInUp 0.8s ease forwards";
+      questionBox.style.pointerEvents = "auto";
+    }, 2000);
 
     function moveAndShrinkNo() {
       const padding = 10;
@@ -234,7 +260,3 @@
 
 </body>
 </html>
-
-
-
-
