@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Be My Valentine 💘</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ff758c, #ff7eb3); /* romantic pink */
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+    }
+
+    .container {
+      position: relative; /* 🔑 KEY LINE */
+      text-align: center;
+      background: #fff0f5;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+
+    h1 {
+      color: #ff4d6d;
+      margin-bottom: 30px;
+    }
+
+    .buttons {
+      position: relative;
+      height: 80px;
+    }
+
+    button {
+      padding: 12px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    #yes {
+      background-color: #ff4d6d;
+      color: white;
+      margin-right: 20px;
+    }
+
+    #no {
+      background-color: #ccc;
+      color: #333;
+      position: absolute;
+    }
+
+    .result {
+      display: none;
+    }
+
+    .result h2 {
+      color: #ff4d6d;
+    }
+
+    .result img {
+      width: 250px;
+      margin-top: 20px;
+      border-radius: 15px;
+    }
+
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+    	transform: translateY(100vh) rotate(720deg);
+    	opacity: 0;
+      }
+    }
+
+    .confetti {
+      position: fixed;
+      top: -10px;
+      width: 10px;
+      height: 10px;
+      background-color: red;
+      animation: confetti-fall 2.5s linear forwards;
+      z-index: 9999;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container" id="questionBox">
+    <h1>Will you be my Valentine? 💖</h1>
+    <div class="buttons">
+      <button id="yes">Yes 💘</button>
+      <button id="no">No 😢</button>
+    </div>
+  </div>
+
+  <div class="container result" id="resultBox">
+    <h2>Yayyyy! 💕🥰</h2>
+    <p>You just made my heart the happiest 💖</p>
+    <img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" alt="Cute GIF">
+  </div>
+
+<script>
+  const noBtn = document.getElementById("no");
+  const yesBtn = document.getElementById("yes");
+  const questionBox = document.getElementById("questionBox");
+  const resultBox = document.getElementById("resultBox");
+
+  let noScale = 1;
+  let yesScale = 1;
+
+  noBtn.addEventListener("mouseenter", () => {
+    const container = questionBox;
+    const padding = 10;
+
+    const maxX =
+      container.clientWidth - noBtn.offsetWidth - padding;
+    const maxY =
+      container.clientHeight - noBtn.offsetHeight - padding;
+
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+
+    noBtn.style.left = `${x}px`;
+    noBtn.style.top = `${y}px`;
+
+    // ❌ No shrinks
+    noScale = Math.max(0.4, noScale - 0.1);
+    noBtn.style.transform = `scale(${noScale})`;
+
+    // ✅ Yes grows
+    yesScale += 0.1;
+    yesBtn.style.transform = `scale(${yesScale})`;
+  });
+
+  yesBtn.addEventListener("click", () => {
+    questionBox.style.display = "none";
+    resultBox.style.display = "block";
+    launchConfetti();
+  });
+
+  function launchConfetti() {
+    for (let i = 0; i < 80; i++) {
+      const confetti = document.createElement("div");
+      confetti.classList.add("confetti");
+
+      confetti.style.left = Math.random() * window.innerWidth + "px";
+      confetti.style.backgroundColor =
+        `hsl(${Math.random() * 360}, 100%, 50%)`;
+      confetti.style.animationDuration =
+        2 + Math.random() * 2 + "s";
+
+      document.body.appendChild(confetti);
+
+      setTimeout(() => {
+        confetti.remove();
+      }, 4000);
+    }
+  }
+</script>
+
+
+
+</body>
+</html>
