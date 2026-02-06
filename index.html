@@ -1,262 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Be My Valentine 💖</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Be My Valentine 💖</title>
 
-  <style>
-    /* ================= GLOBAL BACKGROUND ================= */
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-image: url("center.gif"); /* GIF BACKGROUND */
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      font-family: 'Segoe UI', sans-serif;
-      overflow: hidden;
-    }
-
-    /* Soft overlay for readability */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: rgba(255, 255, 255, 0.4);
-      z-index: 0;
-    }
-
-    /* ================= QUESTION CARD ================= */
-    .container {
-      position: relative;
-      text-align: center;
-      background: white;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-      max-width: 400px;
-      width: 90%;
-      z-index: 2;
-    }
-
-    .container.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    h1 {
-      color: #ff4d6d;
-      margin-bottom: 30px;
-    }
-
-    .buttons {
-      position: relative;
-      height: 160px;
-    }
-
-    #yesWrapper {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 2;
-    }
-
-    #yes {
-      background-color: #ff4d6d;
-      color: white;
-      padding: 12px 30px;
-      font-size: 18px;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      min-width: 120px;
-      min-height: 45px;
-      transform-origin: center;
-    }
-
-    #no {
-      background-color: #ccc;
-      color: #333;
-      position: absolute;
-      top: 70px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 12px 30px;
-      font-size: 18px;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      min-width: 120px;
-      min-height: 45px;
-      z-index: 3;
-    }
-
-    /* ================= RESULT CONTENT ================= */
-    .result {
-  display: none;           /* 🔑 fully hidden initially */
-  position: fixed;
-  inset: 0;
-  justify-content: center;
-  align-items: center;
-  z-index: 3;
+<style>
+/* ================= BACKGROUND GRID ================= */
+body {
+  margin: 0;
+  height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+  overflow: hidden;
 }
 
+/* 2x2 grid */
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 50vh 50vh; /* 🔑 force equal vertical split */
+  z-index: -2;
+}
 
-    .result-content {
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
-      text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    }
+.bg-grid img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(18px);
+  transition: filter 0.8s ease, transform 0.8s ease;
+}
 
-    .result-content h2 {
-      color: #ff4d6d;
-      margin-bottom: 15px;
-    }
+.bg-grid img.reveal {
+  filter: blur(0);
+  transform: scale(1.03);
+}
 
-    .result-content img {
-      width: 170px;
-      height: auto;
-    }
+/* ================= QUESTION CARD ================= */
+.container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(6px);
+  padding: 35px;
+  border-radius: 20px;
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
 
-    /* ================= CONFETTI ================= */
-    @keyframes confetti-fall {
-      0% {
-        transform: translateY(0) rotate(0deg);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(100vh) rotate(720deg);
-        opacity: 0;
-      }
-    }
+.hidden {
+  display: none;
+}
 
-    .confetti {
-      position: fixed;
-      top: -10px;
-      width: 10px;
-      height: 10px;
-      animation: confetti-fall 2.5s linear forwards;
-      z-index: 9999;
-    }
+h1 {
+  color: #ff4d6d;
+  margin-bottom: 25px;
+}
 
-    /* ================= SLIDE IN ================= */
-    @keyframes slideInUp {
-      from {
-        opacity: 0;
-        transform: translateY(40px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+.buttons {
+  position: relative;
+  height: 150px;
+}
 
-    @media (max-width: 600px) {
-      h1 { font-size: 22px; }
-      .container { padding: 25px; }
-      .result-content img { width: 140px; }
-    }
-  </style>
+#yesWrapper {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#yes {
+  background: #ff4d6d;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 30px;
+  font-size: 18px;
+}
+
+#no {
+  position: absolute;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ccc;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 30px;
+  font-size: 18px;
+}
+
+/* ================= RESULT SCREEN ================= */
+.result {
+  position: fixed;
+  inset: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.result-card {
+  background: white;
+  border-radius: 20px;
+  padding: 25px;
+  width: 90%;
+  max-width: 360px;
+  max-height: 80vh;
+  overflow-y: auto;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+.result-card img {
+  width: 160px;
+  margin-bottom: 15px;
+}
+
+.date-info {
+  text-align: left;
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+.date-info p {
+  margin: 8px 0;
+}
+
+/* ================= CONFETTI ================= */
+.confetti {
+  position: fixed;
+  top: -10px;
+  width: 10px;
+  height: 10px;
+  animation: fall 3s linear forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* Result card animation */
+@keyframes resultIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Hidden state */
+.result-card.hidden {
+  opacity: 0;
+}
+
+</style>
 </head>
 
 <body>
 
-  <!-- QUESTION CARD -->
-  <div class="container hidden" id="questionBox">
-    <h1 id="questionText">Will you be my Valentine? 💖</h1>
+<!-- BACKGROUND -->
+<div class="bg-grid">
+  <img src="photo1.jpg">
+  <img src="photo2.jpg">
+  <img src="photo3.jpg">
+  <img src="photo5.jpg">
+</div>
 
-    <div class="buttons">
-      <div id="yesWrapper">
-        <button id="yes">Yes 💘</button>
-      </div>
-      <button id="no">No 😢</button>
+<!-- QUESTION -->
+<div class="container" id="questionBox">
+  <h1 id="questionText">Will you be my Valentine? 💖</h1>
+
+  <div class="buttons">
+    <div id="yesWrapper">
+      <button id="yes">Yes 💘</button>
+    </div>
+    <button id="no">No 😢</button>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div class="result" id="resultBox">
+  <div class="result-card hidden" id="resultCard">
+    <img src="kiss.gif" alt="Kiss">
+    <h2>It’s a date 💕</h2>
+
+    <div class="date-info">
+      <p>📍 <strong>Location:</strong> XYZ Café, Dhanbad</p>
+      <p>🕒 <strong>Time:</strong> 14 Feb, 6:30 PM</p>
+      <p>💌 <strong>Dress code:</strong> Whatever makes you smile</p>
     </div>
   </div>
+</div>
 
-  <!-- RESULT -->
-  <div class="result" id="resultBox">
-    <div class="result-content">
-      <h2>Yayyyy! 💕🥰</h2>
-      <img src="bg.gif" alt="Cute Center Gif">
-    </div>
-  </div>
+<script>
+const noBtn = document.getElementById("no");
+const yesBtn = document.getElementById("yes");
+const questionBox = document.getElementById("questionBox");
+const resultBox = document.getElementById("resultBox");
+const questionText = document.getElementById("questionText");
+const photos = document.querySelectorAll(".bg-grid img");
 
-  <script>
-    const noBtn = document.getElementById("no");
-    const yesBtn = document.getElementById("yes");
-    const questionBox = document.getElementById("questionBox");
-    const resultBox = document.getElementById("resultBox");
-    const questionText = document.getElementById("questionText");
+let noClicks = 0;
+let noScale = 1;
+let yesScale = 1;
 
-    let noScale = 1;
-    let yesScale = 1;
-    let noClicks = 0;
+const messages = [
+  "How can you so NO to this face? 😳",
+  "Really? 😢",
+  "Please don’t do that 🥺"
+];
 
-    const messages = [
-      "Are you sure? 😳",
-      "Really? 😢",
-      "Please don’t do that 🥺💔"
-    ];
+function moveNo() {
+  const maxX = questionBox.clientWidth - noBtn.offsetWidth;
+  const maxY = questionBox.clientHeight - noBtn.offsetHeight;
 
-    /* Show card after 2s */
-    setTimeout(() => {
-      questionBox.classList.remove("hidden");
-      questionBox.style.animation = "slideInUp 0.8s ease forwards";
-      questionBox.style.pointerEvents = "auto";
-    }, 2000);
+  noBtn.style.left = Math.random() * maxX + "px";
+  noBtn.style.top = Math.random() * maxY + "px";
 
-    function moveAndShrinkNo() {
-      const padding = 10;
-      const maxX = questionBox.clientWidth - noBtn.offsetWidth - padding;
-      const maxY = questionBox.clientHeight - noBtn.offsetHeight - padding;
+  noScale = Math.max(0.4, noScale - 0.1);
+  noBtn.style.transform = `translateX(-50%) scale(${noScale})`;
 
-      noBtn.style.left = Math.random() * maxX + "px";
-      noBtn.style.top = Math.random() * maxY + "px";
+  yesScale += 0.1;
+  yesBtn.style.transform = `scale(${yesScale})`;
+}
 
-      noScale = Math.max(0.4, noScale - 0.1);
-      noBtn.style.transform = `translateX(-50%) scale(${noScale})`;
+noBtn.addEventListener("click", (e) => {
+  e.preventDefault();
 
-      yesScale += 0.1;
-      yesBtn.style.transform = `scale(${yesScale})`;
-    }
+  if (noClicks < 3) {
+    photos[noClicks].classList.add("reveal");
+    questionText.textContent = messages[noClicks];
+    noClicks++;
+    return;
+  }
+  moveNo();
+});
 
-    noBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      if (noClicks < messages.length) {
-        questionText.textContent = messages[noClicks];
-        noClicks++;
-        return;
-      }
-      moveAndShrinkNo();
-    });
+yesBtn.addEventListener("click", () => {
+  // 1️⃣ Reveal all background photos
+  photos.forEach((img, i) => {
+    setTimeout(() => img.classList.add("reveal"), i * 150);
+  });
 
-    yesBtn.addEventListener("click", () => {
-      questionBox.style.display = "none";
-      resultBox.style.display = "flex";
-      launchConfetti();
-    });
+  // 2️⃣ Hide question card
+  questionBox.style.display = "none";
 
-    function launchConfetti() {
-      for (let i = 0; i < 80; i++) {
-        const confetti = document.createElement("div");
-        confetti.classList.add("confetti");
-        confetti.style.left = Math.random() * window.innerWidth + "px";
-        confetti.style.backgroundColor =
-          `hsl(${Math.random() * 360}, 100%, 50%)`;
-        confetti.style.animationDuration =
-          2 + Math.random() * 2 + "s";
-        document.body.appendChild(confetti);
-        setTimeout(() => confetti.remove(), 4000);
-      }
-    }
-  </script>
+  // 3️⃣ Show result container immediately (empty)
+  resultBox.style.display = "flex";
+
+  // 4️⃣ Animate result card after a short delay
+  const resultCard = document.getElementById("resultCard");
+  setTimeout(() => {
+    resultCard.classList.remove("hidden");
+    resultCard.style.animation = "resultIn 0.8s ease forwards";
+  }, 600);
+
+  launchConfetti();
+});
+
+function launchConfetti() {
+  for (let i = 0; i < 80; i++) {
+    const c = document.createElement("div");
+    c.className = "confetti";
+    c.style.left = Math.random() * window.innerWidth + "px";
+    c.style.backgroundColor =
+      `hsl(${Math.random() * 360},100%,50%)`;
+    c.style.animationDuration = 2 + Math.random() * 2 + "s";
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 4000);
+  }
+}
+</script>
 
 </body>
 </html>
